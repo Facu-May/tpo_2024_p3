@@ -54,20 +54,75 @@ public class Heap
         // retornamos el nodo actual
         return nodo;
     }
-    public void eliminar() // eliminacion de elemento máximo (max-heap) o mínimo (min-heap)
+     // eliminacion de elemento máximo (max-heap) o mínimo (min-heap)
+    public void eliminar() 
     {
-        if(raiz == null)
+        if (raiz == null) 
         {
-            System.out.println("El heap está vacío");
+            System.out.println("El heap está vacío.");
             return;
         }
-        // reemplazo la raíz con el último nodo
+    
+        // Paso 1: Reemplazar la raíz con el último nodo
         raiz.info = ultimoNodo.info;
-
-        // eliminamos el último nodo
-        /*  Después seguir viendo esto porque la verdad que ya me mareé xD */
-
+    
+        // Paso 2: Eliminar el último nodo
+        Nodo penultimo = obtenerPenultimoNodo(); // Encuentra el penúltimo nodo
+        if (penultimo.der == ultimoNodo) 
+        {
+            penultimo.der = null;
+        } 
+        else 
+        {
+            penultimo.izq = null;
+        }
+        ultimoNodo = penultimo;
+    
+        // Paso 3: Restaurar la propiedad del heap (hundir la raíz)
+        hundir(raiz);
     }
+    
+    // Método auxiliar para encontrar el penúltimo nodo
+    private Nodo obtenerPenultimoNodo() {
+        Nodo actual = raiz;
+        while (actual.izq != ultimoNodo && actual.der != ultimoNodo) 
+        {
+            if (ultimoNodo.info > actual.info) 
+            {
+                actual = actual.izq;
+            } 
+            else 
+            {
+                actual = actual.der;
+            }
+        }
+        return actual;
+    }
+    
+    // Método auxiliar para restaurar la propiedad del heap (hundir un nodo)
+    private void hundir(Nodo nodo) {
+        Nodo hijoMayor = nodo;
+        if (nodo.izq != null && nodo.izq.info > nodo.info) 
+        {
+            hijoMayor = nodo.izq;
+        }
+        if (nodo.der != null && nodo.der.info > hijoMayor.info) 
+        {
+            hijoMayor = nodo.der;
+        }
+    
+        if (hijoMayor != nodo) 
+        {
+            // Intercambiar el nodo con su hijo mayor
+            int temp = nodo.info;
+            nodo.info = hijoMayor.info;
+            hijoMayor.info = temp;
+    
+            // Recursivamente hundir el hijo mayor
+            hundir(hijoMayor);
+        }
+    }
+    
 
     public Nodo getUltimoNodo()
     {
